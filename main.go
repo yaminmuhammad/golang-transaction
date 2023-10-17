@@ -38,7 +38,16 @@ func insertStudentEnrollment(studentEnrollment entity.StudentEnrollment, tx *sql
 	insertStudentEnrollment := "INSERT INTO tx_student_enrollment (id, student_id, subject, credit) VALUES($1, $2, $3, $4)"
 
 	_, err := tx.Exec(insertStudentEnrollment, studentEnrollment.Id, studentEnrollment.Student_Id, studentEnrollment.Subject, studentEnrollment.Credit)
+	validate(err, "Insert", tx)
+}
 
+func validate(err error, massage string, tx *sql.Tx) {
+	if err != nil {
+		tx.Rollback()
+		fmt.Println(err, "Transaction Rollback!")
+	} else {
+		fmt.Println("Successfully " + massage + " data!")
+	}
 }
 
 func connectDb() *sql.DB {
